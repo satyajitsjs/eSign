@@ -6,8 +6,6 @@
 eSign is a web application that allows users to upload, sign, and manage documents electronically. The application consists of a Django backend and a React frontend.
 
 ## Project Structure
-
-```
 eSign/
 ├── accounts/
 │   ├── __init__.py
