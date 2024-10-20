@@ -46,24 +46,26 @@ const DocumentSigning = () => {
     } else {
       signatureData = typedSignature;
     }
-
+  
     const formData = new FormData();
     formData.append('signature', signatureData);
-
+    formData.append('signature_type', signatureType);  // Include signature type
+  
     try {
       const token = localStorage.getItem('access_token');
-      await axios.post(`http://localhost:8000/api/documents/sign/${id}/`, formData, {
+      const response = await axios.post(`http://localhost:8000/api/documents/sign/${id}/`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
         },
       });
+      setDocument(response.data);  // Update the document state with the new data
       toast.success('Document signed successfully');
-      navigate('/dashboard');
     } catch (error) {
       toast.error('Document signing failed');
     }
   };
+  
 
   if (!document) {
     return <div>Loading...</div>;
@@ -71,7 +73,6 @@ const DocumentSigning = () => {
 
   const isPDF = document.file.endsWith('.pdf');
   const documentURL = `http://localhost:8000${document.file}`;
-
 
   return (
     <div className="signing-container">
@@ -85,6 +86,16 @@ const DocumentSigning = () => {
           </a>
         )}
       </div>
+      {document.signed && (
+        <div className="signature-preview">
+          <h3>Signature</h3>
+          {document.signature ? (
+            <img src={`http://localhost:8000${document.signature}`} alt="Signature" />
+          ) : (
+            <p>{document.typed_signature}</p>
+          )}
+        </div>
+      )}
       <div className="signature-container">
         <label>Signature Type:</label>
         <select value={signatureType} onChange={handleSignatureTypeChange}>

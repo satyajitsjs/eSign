@@ -12,5 +12,7 @@ class Document(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     file = models.FileField(upload_to=user_directory_path)
     signed = models.BooleanField(default=False)
-    signature = models.ImageField(upload_to=signature_directory_path, null=True, blank=True)
+    signature = models.ImageField(upload_to=signature_directory_path, null=True, blank=True)  # For drawn signature
+    typed_signature = models.CharField(max_length=255, null=True, blank=True)  # For typed signature
     uploaded_at = models.DateTimeField(auto_now_add=True)
+

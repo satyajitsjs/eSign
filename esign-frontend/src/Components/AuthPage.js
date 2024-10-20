@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './styles.css';
 
-const AuthPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
+const AuthPage = ({ isLogin, onAuthSuccess }) => {
   const [formData, setFormData] = useState({ username: '', password: '', email: '' });
   const navigate = useNavigate();
 
@@ -23,11 +22,13 @@ const AuthPage = () => {
       const response = await axios.post(url, formData);
       if (isLogin) {
         localStorage.setItem('access_token', response.data.access);
+        localStorage.setItem('refresh_token', response.data.refresh);
+        onAuthSuccess(true);  // Notify parent that login was successful
         toast.success('Logged in successfully');
         navigate('/dashboard');
       } else {
         toast.success('Registered successfully');
-        setIsLogin(true);
+        navigate('/login');
       }
     } catch (error) {
       toast.error('Authentication failed');
@@ -72,9 +73,6 @@ const AuthPage = () => {
         </div>
         <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
       </form>
-      <button onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? 'Go to Register' : 'Go to Login'}
-      </button>
     </div>
   );
 };
